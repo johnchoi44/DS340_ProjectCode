@@ -1,11 +1,11 @@
 import streamlit as st
 import folium
+import pandas as pd
 from streamlit_folium import folium_static
 from datetime import datetime
 import clipboard
 from branca.element import Template, MacroElement
-
-
+import backend as back
 
 class ClickForLatLng(MacroElement):
     _template = Template(u"""
@@ -45,45 +45,62 @@ class ClickForLatLng(MacroElement):
 
 
 def generateBaseMap(default_location=[40.704467, -73.892246], default_zoom_start=11,min_zoom=11,max_zoom=15,):
-    base_map = folium.Map(location=default_location, control_scale=True, zoom_start=default_zoom_start, min_zoom=min_zoom, max_zoom=max_zoom)
+    base_map = folium.Map(location=default_location, control_scale=True, zoom_start=default_zoom_start, min_zoom=min_zoom, max_zoom=max_zoom,max_bounds=True, min_lat= 40.47739894 , min_lon= -74.25909008, max_lat= 40.91617849,max_lon=-73.70018092)
     return base_map
 
 
 def init():
     with st.sidebar:
         st.header("Enter your information", )
-        gender = st.radio("Gender:", ["Male","Female"])
-        race = st.selectbox("Race:",['WHITE', 'WHITE HISPANIC', 'BLACK', 'ASIAN / PACIFIC ISLANDER', 'BLACK HISPANIC', 'AMERICAN INDIAN/ALASKAN NATIVE', 'OTHER'])
-        age = st.slider("Age:",0,120)
+        gender = st.radio("Gender:", ["Male","Female"],key="vic")
+        race = st.selectbox("Race:",['WHITE', 'WHITE HISPANIC', 'BLACK', 'ASIAN / PACIFIC ISLANDER', 'BLACK HISPANIC', 'AMERICAN INDIAN/ALASKAN NATIVE', 'OTHER'],key="vic")
+        age = st.slider("Age:",0,120,key="vic")
+        date = st.date_input("Date:",datetime.now())
+        hour = st.slider("Hour:",min_value=0,max_value=24)
+        place = st.radio("Place:",("In park","In public housing","In station"))
+        st.subheader("Enter suspect information",)
+        sus_gender = st.radio("Suspect gender:", ["Male","Female"])
+        sus_race = st.selectbox("Suspect race:",['WHITE', 'WHITE HISPANIC', 'BLACK', 'ASIAN / PACIFIC ISLANDER', 'BLACK HISPANIC', 'AMERICAN INDIAN/ALASKAN NATIVE', 'OTHER'])
+        sus_age = st.slider("Suspect age:",0,120)
         _,col,_ = st.sidebar.columns(3)
+        
         with  col:
             predict = st.button("predict")
-
-    return gender, race, age, predict
+        
+    return gender, race, age, predict, date, hour, place, sus_gender, sus_race, sus_age
 
 
 st.title("New York Crime Prediction")
-gender, race, age, predict= init()
+gender, race, age, predict, date, hour, place,sus_gender, sus_race, sus_age= init()
 base_map = generateBaseMap()
 click = ClickForLatLng()
 base_map.add_child(click)
+
 lat_long = click.lat_long
 if len(lat_long) == 2:
     lat = lat_long[0]
     long = lat_long[1]
+
 else :
     lat = ""
     long = ""
-# try :
-#     folium.Marker([float(lat),float(long)],).add_to(base_map)
+# try:
+    # print(float(lat),float(long))
+    # folium.Marker([float(lat),float(long)]).add_to(base_map)
 # except:
 #     print("no marker")
 
-folium_static(base_map,width=900)
+x = folium_static(base_map)
 
 if predict:
-    time = datetime.now()
-    month = time.month
-    day = time.day
-    hour = time.hour
-    print(gender,race,age,month,day,hour,lat,long)
+    if lat=='' or long == '':
+        st.error("Please make sure that you selected a location on the map")    
+        if st.button("Okay"):
+            pass
+    else:
+        X = back.create_df(hour,date.month,date.day,lat,long,place,age,race,gender,sus_age,sus_race,sus_gender)
+        pred, crimes = back.predict(X)
+        st.markdown(f"You are likely to be a victim of: **{pred}**")
+        st.markdown(f"#### Some of the crimes types are the following: ")
+        st.markdown(crimes)
+
