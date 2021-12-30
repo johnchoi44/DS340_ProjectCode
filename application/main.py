@@ -58,20 +58,15 @@ def init():
         date = st.date_input("Date:",datetime.now())
         hour = st.slider("Hour:",min_value=0,max_value=24)
         place = st.radio("Place:",("In park","In public housing","In station"))
-        st.subheader("Enter suspect information",)
-        sus_gender = st.radio("Suspect gender:", ["Male","Female"])
-        sus_race = st.selectbox("Suspect race:",['WHITE', 'WHITE HISPANIC', 'BLACK', 'ASIAN / PACIFIC ISLANDER', 'BLACK HISPANIC', 'AMERICAN INDIAN/ALASKAN NATIVE', 'OTHER'])
-        sus_age = st.slider("Suspect age:",0,120)
-        _,col,_ = st.sidebar.columns(3)
-        
+        _,col,_ = st.sidebar.columns(3)   
         with  col:
             predict = st.button("predict")
         
-    return gender, race, age, predict, date, hour, place, sus_gender, sus_race, sus_age
+    return gender, race, age, predict, date, hour, place
 
 
 st.title("New York Crime Prediction")
-gender, race, age, predict, date, hour, place,sus_gender, sus_race, sus_age= init()
+gender, race, age, predict, date, hour, place= init()
 base_map = generateBaseMap()
 click = ClickForLatLng()
 base_map.add_child(click)
@@ -98,7 +93,7 @@ if predict:
         if st.button("Okay"):
             pass
     else:
-        X = back.create_df(hour,date.month,date.day,lat,long,place,age,race,gender,sus_age,sus_race,sus_gender)
+        X = back.create_df(hour,date.month,date.day,lat,long,place,age,race,gender)
         pred, crimes = back.predict(X)
         st.markdown(f"You are likely to be a victim of: **{pred}**")
         st.markdown(f"#### Some of the crimes types are the following: ")
