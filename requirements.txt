@@ -1,4 +1,16 @@
 streamlit
 folium
 streamlit-folium
+plotly
+seaborn
+pandas
+numpy
 clipboard
+requests
+joblib
+scikit-learn
+scikit-plot
+xgboost
+lightgbm
+tqdm
+re
