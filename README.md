@@ -2,7 +2,6 @@
   <br>
   End-to-End New York City Crimes Detection using Machine Learning
 
-
 </h1>
 
 <div align="center">
@@ -11,7 +10,8 @@
     <a href="#dataset">Dataset</a> |
     <a href="#notebooks">Notebooks</a> |
     <a href="#technologies">Technologies</a> |
-    <a href="#paper">Paper</a>
+    <a href="#paper">Paper</a> |
+    <a href="#contribution">Contribution</a>
   </h4>
 </div>
 
@@ -50,3 +50,8 @@ pip install -r requirements.txt
 ## Paper
 
 To document our work, we wrote a research paper that is included in the [repo](https://github.com/mohamedkaraa/New-York-Crime-Prediction/blob/main/docs/ny_crime_prediction_paper.pdf).
+
+## Contribution
+<a href="https://github.com/mohamedkaraa/New-York-Crime-Prediction/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=mohamedkaraa/New-York-Crime-Prediction" />
+</a>
