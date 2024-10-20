@@ -2,7 +2,7 @@ import googlemaps
 import pandas as pd
 import time
 
-# API_KEY = "AIzaSyADQ3ItHf0lKjPndIM7pbkaDBr0u002N4E"
+# API_KEY = "put your api Key"
 map_client = googlemaps.Client(API_KEY)
 
 def miles_to_meters(miles):
